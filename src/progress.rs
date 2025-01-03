@@ -36,11 +36,11 @@ pub fn emit_gui_progress_update(progress: f64, message: &str) {
         });
 
         if let Err(e) = window.emit("progress-update", payload) {
-            eprintln!("Failed to emit progress event: {}", e);
+            eprintln!("无法发出进度事件：{}", e);
         }
     }
 }
 
 pub fn emit_gui_error(message: &str) {
-    emit_gui_progress_update(0.0, &format!("Error! {}", message));
+    emit_gui_progress_update(0.0, &format!("错误！ {}", message));
 }

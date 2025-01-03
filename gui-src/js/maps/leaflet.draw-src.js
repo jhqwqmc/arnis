@@ -17,51 +17,51 @@ L.drawLocal = {
 	draw: {
 		toolbar: {
 			actions: {
-				title: 'Cancel drawing',
-				text: 'Cancel'
+				title: '取消绘制',
+				text: '取消'
 			},
 			buttons: {
-				polyline: 'Draw a polyline',
-				polygon: 'Draw a polygon',
-				rectangle: 'Draw a rectangle',
-				circle: 'Draw a circle',
-				marker: 'Draw a marker'
+				polyline: '绘制折线',
+				polygon: '绘制多边形',
+				rectangle: '绘制矩形',
+				circle: '绘制圆形',
+				marker: '绘制标记'
 			}
 		},
 		handlers: {
 			circle: {
 				tooltip: {
-					start: 'Click and drag to draw circle.'
+					start: '点击并拖动以绘制圆圈。'
 				}
 			},
 			marker: {
 				tooltip: {
-					start: 'Click map to place marker.'
+					start: '点击地图放置标记。'
 				}
 			},
 			polygon: {
 				tooltip: {
-					start: 'Click to start drawing shape.',
-					cont: 'Click to continue drawing shape.',
-					end: 'Click first point to close this shape.'
+					start: '点击开始绘制形状。',
+					cont: '点击继续绘制形状。',
+					end: '点击第一个点以关闭此形状。'
 				}
 			},
 			polyline: {
-				error: '<strong>Error:</strong> shape edges cannot cross!',
+				error: '<strong>错误:</strong> 形状边缘不能交叉！',
 				tooltip: {
-					start: 'Click to start drawing line.',
-					cont: 'Click to continue drawing line.',
-					end: 'Click last point to finish line.'
+					start: '点击开始绘制线条。',
+					cont: '点击继续绘制线条。',
+					end: '点击最后一个点完成线条。'
 				}
 			},
 			rectangle: {
 				tooltip: {
-					start: 'Click and drag to draw rectangle.'
+					start: '点击并拖动以绘制矩形。'
 				}
 			},
 			simpleshape: {
 				tooltip: {
-					end: 'Release mouse to finish drawing.'
+					end: '释放鼠标以完成绘制。'
 				}
 			}
 		}
@@ -70,31 +70,31 @@ L.drawLocal = {
 		toolbar: {
 			actions: {
 				save: {
-					title: 'Save changes.',
-					text: 'Save'
+					title: '保存更改。',
+					text: '保存'
 				},
 				cancel: {
-					title: 'Cancel editing, discards all changes.',
-					text: 'Cancel'
+					title: '取消编辑，放弃所有更改。',
+					text: '取消'
 				}
 			},
 			buttons: {
-				edit: 'Edit layers.',
-				editDisabled: 'No layers to edit.',
-				remove: 'Delete layers.',
-				removeDisabled: 'No layers to delete.'
+				edit: '编辑图层。',
+				editDisabled: '没有可编辑的图层。',
+				remove: '删除图层。',
+				removeDisabled: '没有可删除的图层。'
 			}
 		},
 		handlers: {
 			edit: {
 				tooltip: {
-					text: 'Drag handles, or marker to edit feature.',
-					subtext: 'Click cancel to undo changes.'
+					text: '拖动句柄或标记以编辑要素。',
+					subtext: '点击取消以撤销更改。'
 				}
 			},
 			remove: {
 				tooltip: {
-					text: 'Click on a feature to remove'
+					text: '点击要素以移除'
 				}
 			}
 		}

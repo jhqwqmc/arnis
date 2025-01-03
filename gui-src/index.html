@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh"></html>
 
 <head>
   <meta charset="UTF-8" />
@@ -18,39 +18,39 @@
     </div>
 
     <div class="flex-container">
-      <!-- Left Box: Map and BBox Input -->
+      <!-- 左框：地图和边界框输入 -->
       <section class="section map-box" style="margin-bottom: 0; padding-bottom: 0;">
-        <h2>Select Location</h2>
+        <h2>选择位置</h2>
         <span id="bbox-text" style="font-size: 1.0em; display: block; margin-top: -8px; margin-bottom: 3px;">
-          Zoom in and choose your area using the rectangle tool
+          放大并使用矩形工具选择您的区域
         </span>
-        <iframe src="maps.html" width="100%" height="300" class="map-container" title="Map Picker"></iframe>
+        <iframe src="maps.html" width="100%" height="300" class="map-container" title="地图选择器"></iframe>
 
         <span id="bbox-info"
           style="font-size: 0.75em; color: #7bd864; display: block; margin-bottom: 4px; font-weight: bold; min-height: 2em;"></span>
       </section>
 
-      <!-- Right Box: Directory Selection, Start Button, and Progress Bar -->
+      <!-- 右框：目录选择、开始按钮和进度条 -->
       <section class="section controls-box">
         <div class="controls-content">
-          <h2>Select World</h2>
+          <h2>选择世界</h2>
 
-          <!-- Updated Tooltip Structure -->
+          <!-- 更新的工具提示结构 -->
           <div class="tooltip" style="width: 100%;">
             <button type="button" onclick="openWorldPicker()" style="padding: 10px; line-height: 1.2; width: 100%;">
-              Choose World
+              选择世界
               <br>
               <span id="selected-world" style="font-size: 0.8em; color: #fecc44; display: block; margin-top: 4px;">
-                No world selected
+                未选择世界
               </span>
             </button>
             <span class="tooltiptext" style="font-size: 0.8em; line-height: 1.2;">
-              Please select a Minecraft world that can be overwritten, as the generation process will replace existing structures in the chosen world!
+              请选择一个可以被覆盖的Minecraft世界，因为生成过程将替换所选世界中的现有结构！
             </span>
           </div>
           
           <div class="button-container">
-            <button type="button" id="start-button" class="start-button" onclick="startGeneration()">Start Generation</button>
+            <button type="button" id="start-button" class="start-button" onclick="startGeneration()">开始生成</button>
             <button type="button" class="settings-button" onclick="openSettings()">
                 <i class="gear-icon"></i>
             </button>
@@ -58,7 +58,7 @@
           <br><br>
 
           <div class="progress-section">
-            <h2>Progress</h2>
+            <h2>进度</h2>
             <div class="progress-bar-container">
               <div class="progress-bar" id="progress-bar"></div>
             </div>
@@ -71,60 +71,63 @@
       </section>
     </div>
 
-    <!-- World Picker Modal -->
+    <!-- 世界选择器模态框 -->
     <div id="world-modal" class="modal" style="display: none;">
       <div class="modal-content">
         <span class="close-button" onclick="closeWorldPicker()">&times;</span>
-        <h2>Choose World</h2>
+        <h2>选择世界</h2>
 
-        <button type="button" id="select-world-button" class="select-world-button" onclick="selectWorld(false)">Select existing world</button>
-        <button type="button" id="generate-world-button" class="generate-world-button" onclick="selectWorld(true)">Generate new world</button>
+        <button type="button" id="select-world-button" class="select-world-button" onclick="selectWorld(false)">选择现有世界</button>
+        <button type="button" id="generate-world-button" class="generate-world-button" onclick="selectWorld(true)">生成新世界</button>
       </div>
     </div>
 
-    <!-- Settings Modal -->
+    <!-- 设置模态框 -->
     <div id="settings-modal" class="modal" style="display: none;">
       <div class="modal-content">
         <span class="close-button" onclick="closeSettings()">&times;</span>
-        <h2>Customization Settings</h2>
+        <h2>自定义设置</h2>
 
-        <!-- Winter Mode Toggle Button -->
+        <!-- 冬季模式切换按钮 -->
         <div class="winter-toggle-container">
-          <label for="winter-toggle">Winter Mode:</label>
+          <label for="winter-toggle">冬季模式：</label>
           <input type="checkbox" id="winter-toggle" name="winter-toggle">
         </div>
 
-        <!-- World Scale Slider -->
+        <!-- 世界比例滑块 -->
         <div class="scale-slider-container">
-          <label for="scale-value-slider">World Scale:</label>
+          <label for="scale-value-slider">世界比例：</label>
           <input type="range" id="scale-value-slider" name="scale-value-slider" min="0.50" max="2.5" step="0.25" value="1">
           <span id="slider-value">1.00</span>
         </div>
         
-        <!-- Bounding Box Input -->
+        <!-- 边界框输入 -->
         <div class="bbox-input-container">
-          <label for="bbox-coords">Custom Bounding Box:</label>
-          <input type="text" id="bbox-coords" name="bbox-coords" maxlength="55" style="width: 280px;" autocomplete="one-time-code" placeholder="Format: lat,lng,lat,lng">
+          <label for="bbox-coords">自定义边界框：</label>
+          <input type="text" id="bbox-coords" name="bbox-coords" maxlength="55" style="width: 280px;" autocomplete="one-time-code" placeholder="格式：纬度，经度，纬度，经度">
         </div>
 
-        <!-- Floodfill Timeout Input -->
+        <!-- 填充超时输入 -->
         <div class="timeout-input-container">
-          <label for="floodfill-timeout">Floodfill Timeout (sec):</label>
-          <input type="number" id="floodfill-timeout" name="floodfill-timeout" min="0" step="1" value="20" style="width: 100px;" placeholder="Seconds">
+          <label for="floodfill-timeout">填充超时（秒）：</label>
+          <input type="number" id="floodfill-timeout" name="floodfill-timeout" min="0" step="1" value="20" style="width: 100px;" placeholder="秒">
         </div><br>
 
-        <!-- Ground Level Input -->
+        <!-- 地面高度输入 -->
         <div class="ground-level-input-container">
-          <label for="ground-level">Ground Level:</label>
-          <input type="number" id="ground-level" name="ground-level" min="-64" max="290" value="-62" style="width: 100px;" placeholder="Ground Level">
+          <label for="ground-level">地面高度：</label>
+          <input type="number" id="ground-level" name="ground-level" min="-64" max="290" value="-62" style="width: 100px;" placeholder="地面高度">
         </div>
       </div>
     </div>
 
-    <!-- Footer -->
+    <!-- 页脚 -->
     <footer class="footer">
       <a href="https://github.com/louis-e/arnis" target="_blank" class="footer-link">
-        © <span id="current-year"></span> Arnis v<span id="version-placeholder">x.x.x</span> by louis-e
+      © <span id="current-year"></span> Arnis v<span id="version-placeholder">x.x.x</span> by louis-e
+      </a>
+      <a href="https://github.com/jhqwqmc" target="_blank" class="footer-link">
+      汉化作者：jhqwqmc
       </a>
     </footer>
   </main>

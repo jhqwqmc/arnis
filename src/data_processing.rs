@@ -13,8 +13,8 @@ pub fn generate_world(
     scale_factor_x: f64,
     scale_factor_z: f64,
 ) -> Result<(), String> {
-    println!("{} Processing data...", "[3/5]".bold());
-    emit_gui_progress_update(10.0, "Processing data...");
+    println!("{} 正在处理数据...", "[3/5]".bold());
+    emit_gui_progress_update(10.0, "正在处理数据...");
 
     let ground_level: i32 = args.ground_level;
     let region_dir: String = format!("{}/region", args.path);
@@ -23,8 +23,8 @@ pub fn generate_world(
 
     editor.set_sign(
         "↑".to_string(),
-        "Generated World".to_string(),
-        "This direction".to_string(),
+        "生成的世界".to_string(),
+        "这个方向".to_string(),
         "".to_string(),
         9,
         -61,
@@ -36,7 +36,7 @@ pub fn generate_world(
     let elements_count: usize = elements.len();
     let process_pb: ProgressBar = ProgressBar::new(elements_count as u64);
     process_pb.set_style(ProgressStyle::default_bar()
-        .template("{spinner:.green} [{elapsed_precise}] [{bar:45.white/black}] {pos}/{len} elements ({eta}) {msg}")
+        .template("{spinner:.green} [{elapsed_precise}] [{bar:45.white/black}] {pos}/{len} 元素 ({eta}) {msg}")
         .unwrap()
         .progress_chars("█▓░"));
 
@@ -53,7 +53,7 @@ pub fn generate_world(
 
         if args.debug {
             process_pb.set_message(format!(
-                "(Element ID: {} / Type: {})",
+                "（元素 ID：{} / 类型：{}）",
                 element.id(),
                 element.kind()
             ));
@@ -121,13 +121,13 @@ pub fn generate_world(
 
     let mut block_counter: u64 = 0;
 
-    println!("{} Generating ground layer...", "[4/5]".bold());
-    emit_gui_progress_update(60.0, "Generating ground layer...");
+    println!("{} 生成地面层...", "[4/5]".bold());
+    emit_gui_progress_update(60.0, "生成地面层...");
 
     let ground_pb: ProgressBar = ProgressBar::new(total_blocks);
     ground_pb.set_style(
         ProgressStyle::default_bar()
-            .template("{spinner:.green} [{elapsed_precise}] [{bar:45}] {pos}/{len} blocks ({eta})")
+            .template("{spinner:.green} [{elapsed_precise}] [{bar:45}] {pos}/{len} 块 ({eta})")
             .unwrap()
             .progress_chars("█▓░"),
     );
@@ -163,7 +163,7 @@ pub fn generate_world(
     // Save world
     editor.save();
 
-    emit_gui_progress_update(100.0, "Done! World generation completed.");
-    println!("{}", "Done! World generation completed.".green().bold());
+    emit_gui_progress_update(100.0, "完成！世界生成完成。");
+    println!("{}", "完成！世界生成完成。".green().bold());
     Ok(())
 }

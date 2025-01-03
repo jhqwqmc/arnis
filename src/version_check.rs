@@ -6,7 +6,7 @@ use std::error::Error;
 
 /// URL to the remote Cargo.toml file to check for the latest version
 const REMOTE_CARGO_TOML_URL: &str =
-    "https://raw.githubusercontent.com/louis-e/arnis/main/Cargo.toml";
+    "https://ghproxy.cc/https://raw.githubusercontent.com/louis-e/arnis/main/Cargo.toml";
 
 /// Fetches the latest version from the remote Cargo.toml file and compares it with the local version.
 /// Returns `true` if a newer version is available, `false` otherwise.
@@ -36,7 +36,7 @@ pub fn check_for_updates() -> Result<bool, Box<dyn Error>> {
             if remote_version > local_version {
                 println!(
                     "{} {} -> {}",
-                    "A new version is available:".yellow().bold(),
+                    "有新版本可用：".yellow().bold(),
                     local_version,
                     remote_version
                 );
@@ -60,22 +60,22 @@ fn extract_version_from_cargo_toml(cargo_toml_contents: &str) -> Result<Version,
             return Ok(Version::parse(version_str)?);
         }
     }
-    Err("Failed to find version in Cargo.toml".into())
+    Err("在 Cargo.toml 中找不到版本".into())
 }
 
 /// Handles HTTP errors by printing the status code and a user-friendly message.
 fn handle_http_error(status: StatusCode) {
     eprintln!(
-        "Failed to fetch remote Cargo.toml: HTTP error {}: {}",
+        "无法获取远程 Cargo.toml：HTTP 错误 {}：{}",
         status.as_u16(),
-        status.canonical_reason().unwrap_or("Unknown error")
+        status.canonical_reason().unwrap_or("未知错误")
     );
 }
 
 /// Handles the error for HTTP requests more gracefully, including printing HTTP status codes when applicable.
 fn handle_request_error(err: ReqwestError) {
     if err.is_timeout() {
-        eprintln!("Request timed out. Please check your network connection.");
+        eprintln!("请求超时。请检查您的网络连接。");
     } else if let Some(status) = err.status() {
         handle_http_error(status);
     }

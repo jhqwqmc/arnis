@@ -23,20 +23,20 @@ fn download_with_reqwest(url: &str, query: &str) -> Result<String, Box<dyn std::
             if resp.status().is_success() {
                 Ok(resp.text()?)
             } else {
-                Err(format!("Error! Received response code: {}", resp.status()).into())
+                Err(format!("错误！收到的响应代码：{}", resp.status()).into())
             }
         }
         Err(e) => {
             if e.is_timeout() {
                 eprintln!(
                     "{}",
-                    "Error! Request timed out. Try selecting a smaller area."
+                    "错误！请求超时。请尝试选择较小的区域。"
                         .red()
                         .bold()
                 );
-                emit_gui_error("Request timed out. Try selecting a smaller area.");
+                emit_gui_error("请求超时。请尝试选择较小的区域。");
             } else {
-                eprintln!("{}", format!("Error! {}", e).red().bold());
+                eprintln!("{}", format!("错误！ {}", e).red().bold());
                 emit_gui_error(&e.to_string());
             }
 
@@ -57,7 +57,7 @@ fn download_with_curl(url: &str, query: &str) -> io::Result<String> {
         .output()?;
 
     if !output.status.success() {
-        Err(io::Error::new(io::ErrorKind::Other, "Curl command failed"))
+        Err(io::Error::new(io::ErrorKind::Other, "Curl 命令失败"))
     } else {
         Ok(String::from_utf8_lossy(&output.stdout).to_string())
     }
@@ -71,7 +71,7 @@ fn download_with_wget(url: &str, query: &str) -> io::Result<String> {
         .output()?;
 
     if !output.status.success() {
-        Err(io::Error::new(io::ErrorKind::Other, "Wget command failed"))
+        Err(io::Error::new(io::ErrorKind::Other, "Wget 命令失败"))
     } else {
         Ok(String::from_utf8_lossy(&output.stdout).to_string())
     }
@@ -84,8 +84,8 @@ pub fn fetch_data(
     debug: bool,
     download_method: &str,
 ) -> Result<Value, Box<dyn std::error::Error>> {
-    println!("{} Fetching data...", "[1/5]".bold());
-    emit_gui_progress_update(1.0, "Fetching data...");
+    println!("{} 正在获取数据...", "[1/5]".bold());
+    emit_gui_progress_update(1.0, "正在获取数据...");
 
     // List of Overpass API servers
     let api_servers: Vec<&str> = vec![
@@ -155,33 +155,33 @@ pub fn fetch_data(
             if let Some(remark) = data["remark"].as_str() {
                 // Check if the remark mentions memory or other runtime errors
                 if remark.contains("runtime error") && remark.contains("out of memory") {
-                    eprintln!("{}", "Error! The query ran out of memory on the Overpass API server. Try using a smaller area.".red().bold());
-                    emit_gui_error("Try using a smaller area.");
+                    eprintln!("{}", "错误！查询在 Overpass API 服务器上耗尽了内存。请尝试使用较小的区域。".red().bold());
+                    emit_gui_error("尝试使用较小的区域。");
                 } else {
                     // Handle other Overpass API errors if present in the remark field
                     eprintln!(
                         "{}",
-                        format!("Error! API returned: {}", remark).red().bold()
+                        format!("错误！API 返回：{}", remark).red().bold()
                     );
-                    emit_gui_error(&format!("API returned: {}", remark));
+                    emit_gui_error(&format!("API 返回：{}", remark));
                 }
             } else {
                 // General case for when there are no elements and no specific remark
                 eprintln!(
                     "{}",
-                    "Error! No data available in this region.".red().bold()
+                    "错误！此区域无可用数据。".red().bold()
                 );
-                emit_gui_error("No data available in this region.");
+                emit_gui_error("此区域无可用数据。");
             }
 
             if debug {
-                println!("Additional debug information: {}", data);
+                println!("附加调试信息：{}", data);
             }
 
             if !is_running_with_gui() {
                 std::process::exit(1);
             } else {
-                return Err("Data fetch failed".into());
+                return Err("数据获取失败".into());
             }
         }
 

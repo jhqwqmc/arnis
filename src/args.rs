@@ -57,7 +57,7 @@ impl Args {
         if !mc_world_path.join("region").exists() {
             eprintln!(
                 "{}",
-                "Error! No Minecraft world found at the given path"
+                "错误！在指定路径中未找到 Minecraft 世界"
                     .red()
                     .bold()
             );
@@ -67,7 +67,7 @@ impl Args {
         // Validating bbox if provided
         if let Some(bbox) = &self.bbox {
             if !validate_bounding_box(bbox) {
-                eprintln!("{}", "Error! Invalid bbox input".red().bold());
+                eprintln!("{}", "错误！输入的边界框无效".red().bold());
                 exit(1);
             }
         }

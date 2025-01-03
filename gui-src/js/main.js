@@ -1,6 +1,6 @@
 const { invoke } = window.__TAURI__.core;
 
-// Initialize elements and start the demo progress
+// 初始化元素并开始演示进度
 window.addEventListener("DOMContentLoaded", async () => {
   initFooter();
   await checkForUpdates();
@@ -13,7 +13,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   handleBboxInput();
 });
 
-// Function to initialize the footer with the current year and version
+// 初始化页脚，显示当前年份和版本
 async function initFooter() {
   const currentYear = new Date().getFullYear();
   document.getElementById("current-year").textContent = currentYear;
@@ -23,11 +23,11 @@ async function initFooter() {
     const footerLink = document.querySelector(".footer-link");
     footerLink.textContent = `© ${currentYear} Arnis v${version} by louis-e`;
   } catch (error) {
-    console.error("Failed to fetch version:", error);
+    console.error("获取版本失败:", error);
   }
 }
 
-// Function to check for updates and display a notification if available
+// 检查更新并显示通知（如果有）
 async function checkForUpdates() {
   try {
     const isUpdateAvailable = await invoke('gui_check_for_updates');
@@ -42,28 +42,28 @@ async function checkForUpdates() {
       updateMessage.style.display = "block";
       updateMessage.style.textDecoration = "none";
 
-      updateMessage.textContent = "There's a new version available! Click here to download it.";
+      updateMessage.textContent = "有新版本可用！点击这里下载。";
       footer.style.marginTop = "15px";
       footer.appendChild(updateMessage);
     }
   } catch (error) {
-    console.error("Failed to check for updates: ", error);
+    console.error("检查更新失败: ", error);
   }
 }
 
-// Function to register the event listener for bbox updates from iframe
+// 注册事件监听器，用于接收来自 iframe 的边界框更新
 function registerMessageEvent() {
   window.addEventListener('message', function (event) {
     const bboxText = event.data.bboxText;
 
     if (bboxText) {
-      console.log("Updated BBOX Coordinates:", bboxText);
+      console.log("更新的边界框坐标:", bboxText);
       displayBboxInfoText(bboxText);
     }
   });
 }
 
-// Function to set up the progress bar listener
+// 设置进度条监听器
 function setupProgressListener() {
   const progressBar = document.getElementById("progress-bar");
   const progressMessage = document.getElementById("progress-message");
@@ -80,10 +80,10 @@ function setupProgressListener() {
     if (message != "") {
       progressMessage.textContent = message;
 
-      if (message.startsWith("Error!")) {
+      if (message.startsWith("错误！")) {
         progressMessage.style.color = "#fa7878";
         generationButtonEnabled = true;
-      } else if (message.startsWith("Done!")) {
+      } else if (message.startsWith("完毕！")) {
         progressMessage.style.color = "#7bd864";
         generationButtonEnabled = true;
       } else {
@@ -94,19 +94,19 @@ function setupProgressListener() {
 }
 
 function initSettings() {
-  // Settings
+  // 设置
   const settingsModal = document.getElementById("settings-modal");
   const slider = document.getElementById("scale-value-slider");
   const sliderValue = document.getElementById("slider-value");
   
-  // Open settings modal
+  // 打开设置模态框
   function openSettings() {
     settingsModal.style.display = "flex";
     settingsModal.style.justifyContent = "center";
     settingsModal.style.alignItems = "center";
   }
 
-  // Close settings modal
+  // 关闭设置模态框
   function closeSettings() {
     settingsModal.style.display = "none";
   }
@@ -114,24 +114,24 @@ function initSettings() {
   window.openSettings = openSettings;
   window.closeSettings = closeSettings;
 
-  // Update slider value display
+  // 更新滑块值显示
   slider.addEventListener("input", () => {
     sliderValue.textContent = parseFloat(slider.value).toFixed(2);
   });
 }
 
 function initWorldPicker() {
-  // World Picker
+  // 世界选择器
   const worldPickerModal = document.getElementById("world-modal");
   
-  // Open world picker modal
+  // 打开世界选择器模态框
   function openWorldPicker() {
     worldPickerModal.style.display = "flex";
     worldPickerModal.style.justifyContent = "center";
     worldPickerModal.style.alignItems = "center";
   }
 
-  // Close world picker modal
+  // 关闭世界选择器模态框
   function closeWorldPicker() {
     worldPickerModal.style.display = "none";
   }
@@ -140,7 +140,7 @@ function initWorldPicker() {
   window.closeWorldPicker = closeWorldPicker;
 }
 
-// Function to validate and handle bbox input
+// 验证并处理边界框输入
 function handleBboxInput() {
   const inputBox = document.getElementById("bbox-coords");
   const bboxInfo = document.getElementById("bbox-info");
@@ -155,52 +155,52 @@ function handleBboxInput() {
           return;
       }
 
-      // Regular expression to validate bbox input (supports both comma and space-separated formats)
+      // 正则表达式验证边界框输入（支持逗号和空格分隔格式）
       const bboxPattern = /^(-?\d+(\.\d+)?)[,\s](-?\d+(\.\d+)?)[,\s](-?\d+(\.\d+)?)[,\s](-?\d+(\.\d+)?)$/;
 
       if (bboxPattern.test(input)) {
           const matches = input.match(bboxPattern);
 
-          // Extract coordinates (Lat / Lng order expected)
+          // 提取坐标（预期顺序为纬度/经度）
           const lat1 = parseFloat(matches[1]);
           const lng1 = parseFloat(matches[3]);
           const lat2 = parseFloat(matches[5]);
           const lng2 = parseFloat(matches[7]);
 
-          // Validate latitude and longitude ranges in the expected Lat / Lng order
+          // 验证纬度和经度范围（预期顺序为纬度/经度）
           if (
               lat1 >= -90 && lat1 <= 90 &&
               lng1 >= -180 && lng1 <= 180 &&
               lat2 >= -90 && lat2 <= 90 &&
               lng2 >= -180 && lng2 <= 180
           ) {
-              // Input is valid; trigger the event
+              // 输入有效，触发事件
               const bboxText = `${lat1} ${lng1} ${lat2} ${lng2}`;
               window.dispatchEvent(new MessageEvent('message', { data: { bboxText } }));
 
-              // Update the info text
-              bboxInfo.textContent = "Custom selection confirmed!";
+              // 更新信息文本
+              bboxInfo.textContent = "自定义选择已确认！";
               bboxInfo.style.color = "#7bd864";
           } else {
-              // Valid numbers but invalid order or range
-              bboxInfo.textContent = "Error: Coordinates are out of range or incorrectly ordered (Lat before Lng required).";
+              // 有效数字但顺序或范围无效
+              bboxInfo.textContent = "错误：坐标超出范围或顺序不正确（需要先纬度后经度）。";
               bboxInfo.style.color = "#fecc44";
               selectedBBox = "";
           }
       } else {
-          // Input doesn't match the required format
-          bboxInfo.textContent = "Invalid format. Please use 'lat,lng,lat,lng' or 'lat lng lat lng'.";
+          // 输入不符合要求的格式
+          bboxInfo.textContent = "格式无效。请使用 'lat,lng,lat,lng' 或 'lat lng lat lng'。";
           bboxInfo.style.color = "#fecc44";
           selectedBBox = "";
       }
   });
 }
 
-// Function to calculate the bounding box "size" in square meters based on latitude and longitude
+// 根据纬度和经度计算边界框的“大小”（以平方米为单位）
 function calculateBBoxSize(lng1, lat1, lng2, lat2) {
-  // Approximate distance calculation using Haversine formula or geodesic formula
+  // 使用 Haversine 公式或测地线公式进行近似距离计算
   const toRad = (angle) => (angle * Math.PI) / 180;
-  const R = 6371000; // Earth radius in meters
+  const R = 6371000; // 地球半径（米）
 
   const latDistance = toRad(lat2 - lat1);
   const lngDistance = toRad(lng2 - lng1);
@@ -210,14 +210,14 @@ function calculateBBoxSize(lng1, lat1, lng2, lat2) {
     Math.sin(lngDistance / 2) * Math.sin(lngDistance / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-  // Width and height of the box
+  // 边框的宽度和高度
   const height = R * latDistance;
   const width = R * lngDistance;
 
   return Math.abs(width * height);
 }
 
-// Function to normalize longitude to the range [-180, 180]
+// 将经度规范化到 [-180, 180] 范围内
 function normalizeLongitude(lon) {
   return ((lon + 180) % 360 + 360) % 360 - 180;
 }
@@ -226,35 +226,35 @@ const threshold1 = 12332660.00;
 const threshold2 = 36084700.00;
 let selectedBBox = "";
 
-// Function to handle incoming bbox data
+// 处理传入的边界框数据
 function displayBboxInfoText(bboxText) {
   let [lng1, lat1, lng2, lat2] = bboxText.split(" ").map(Number);
 
-  // Normalize longitudes
+  // 规范化经度
   lat1 = parseFloat(normalizeLongitude(lat1).toFixed(6));
   lat2 = parseFloat(normalizeLongitude(lat2).toFixed(6));
   selectedBBox = `${lng1} ${lat1} ${lng2} ${lat2}`;
 
   const bboxInfo = document.getElementById("bbox-info");
 
-  // Reset the info text if the bbox is 0,0,0,0
+  // 如果边界框为 0,0,0,0，则重置信息文本
   if (lng1 === 0 && lat1 === 0 && lng2 === 0 && lat2 === 0) {
     bboxInfo.textContent = "";
     selectedBBox = "";
     return;
   }
 
-  // Calculate the size of the selected bbox
+  // 计算所选边界框的大小
   const selectedSize = calculateBBoxSize(lng1, lat1, lng2, lat2);
 
   if (selectedSize > threshold2) {
-    bboxInfo.textContent = "This area is very large and could exceed typical computing limits.";
+    bboxInfo.textContent = "该区域非常大，可能超出典型计算限制。";
     bboxInfo.style.color = "#fa7878";
   } else if (selectedSize > threshold1) {
-    bboxInfo.textContent = "The area is quite extensive and may take significant time and resources.";
+    bboxInfo.textContent = "该区域相当广泛，可能需要大量时间和资源。";
     bboxInfo.style.color = "#fecc44";
   } else {
-    bboxInfo.textContent = "Selection confirmed!";
+    bboxInfo.textContent = "选择已确认！";
     bboxInfo.style.color = "#7bd864";
   }
 }
@@ -286,7 +286,7 @@ async function startGeneration() {
     }
 
     if (!selectedBBox || selectedBBox == "0.000000 0.000000 0.000000 0.000000") {
-      document.getElementById('bbox-info').textContent = "Select a location first!";
+      document.getElementById('bbox-info').textContent = "请先选择一个位置！";
       document.getElementById('bbox-info').style.color = "#fa7878";
       return;
     }
@@ -298,7 +298,7 @@ async function startGeneration() {
       worldPath == "Minecraft directory not found." ||
       worldPath === ""
     ) {
-      document.getElementById('selected-world').textContent = "Select a Minecraft world first!";
+      document.getElementById('selected-world').textContent = "请先选择一个 Minecraft 世界！";
       document.getElementById('selected-world').style.color = "#fa7878";
       return;
     }
@@ -308,11 +308,11 @@ async function startGeneration() {
     var floodfill_timeout = parseInt(document.getElementById("floodfill-timeout").value, 10);
     var ground_level = parseInt(document.getElementById("ground-level").value, 10);
 
-    // Validate floodfill_timeout and ground_level
+    // 验证 floodfill_timeout 和 ground_level
     floodfill_timeout = isNaN(floodfill_timeout) || floodfill_timeout < 0 ? 20 : floodfill_timeout;
     ground_level = isNaN(ground_level) || ground_level < -62 ? 20 : ground_level;
 
-    // Pass the bounding box and selected world to the Rust backend
+    // 将边界框和所选世界传递给 Rust 后端
     await invoke("gui_start_generation", {
         bboxText: selectedBBox,
         selectedWorld: worldPath,
@@ -322,10 +322,10 @@ async function startGeneration() {
         floodfillTimeout: floodfill_timeout,
     });
 
-    console.log("Generation process started.");
+    console.log("生成过程已开始。");
     generationButtonEnabled = false;
   } catch (error) {
-    console.error("Error starting generation:", error);
+    console.error("启动生成时出错:", error);
     generationButtonEnabled = true;
   }
 }

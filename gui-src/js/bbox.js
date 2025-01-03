@@ -163,8 +163,8 @@ var FormatSniffer = (function () {  // execute immediately
                 */
                 throw {
                     "name": "NoTypeMatchError",
-                    "message": "The data is not a recognized format:\n \
-1. ogrinfo extent output\n \
+                    "message": "数据格式无法识别：\n \
+1. ogrinfo 范围输出\n \
 2. bbox as (xMin,yMin,xMax,yMax )\n \
 3. GeoJSON\n \
 4. WKT\n\n "
@@ -174,7 +174,7 @@ var FormatSniffer = (function () {  // execute immediately
 
         } catch (err) {
 
-            alert("Your paste is not parsable:\n" + err.message);
+            alert("您的粘贴无法解析：\n" + err.message);
             fail = true;
 
         }
@@ -462,7 +462,9 @@ $(document).ready(function () {
     $("#projection").val(currentproj);
 
     L.mapbox.accessToken = 'pk.eyJ1IjoiY3Vnb3MiLCJhIjoiY2p4Nm43MzA3MDFmZDQwcGxsMjB4Z3hnNiJ9.SQbnMASwdqZe6G4n6OMvVw';
-    map = L.mapbox.map('map').setView([50.114768, 8.687322], 4).addLayer(L.mapbox.styleLayer('mapbox://styles/mapbox/streets-v11'));
+    // 更改为中文地图图层
+    map = L.map('map').setView([39.9042, 116.4074], 4);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
     rsidebar = L.control.sidebar('rsidebar', {
         position: 'right',

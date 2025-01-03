@@ -42,7 +42,7 @@ fn print_banner() {
         ███    █▀    ███    ███  ▀█   █▀  █▀    ▄████████▀
                      ███    ███
 
-                          version {}
+                          版本 {}
                 {}
         "#,
         version,
@@ -67,7 +67,7 @@ fn main() {
         if let Err(e) = version_check::check_for_updates() {
             eprintln!(
                 "{}: {}",
-                "Error checking for version updates".red().bold(),
+                "检查版本更新时出错".red().bold(),
                 e
             );
         }
@@ -79,9 +79,9 @@ fn main() {
         let bbox: Vec<f64> = args
             .bbox
             .as_ref()
-            .expect("Bounding box is required")
+            .expect("需要边界框")
             .split(',')
-            .map(|s: &str| s.parse::<f64>().expect("Invalid bbox coordinate"))
+            .map(|s: &str| s.parse::<f64>().expect("边界框坐标无效"))
             .collect::<Vec<f64>>();
 
         let bbox_tuple: (f64, f64, f64, f64) = (bbox[0], bbox[1], bbox[2], bbox[3]);
@@ -89,7 +89,7 @@ fn main() {
         // Fetch data
         let raw_data: serde_json::Value =
             retrieve_data::fetch_data(bbox_tuple, args.file.as_deref(), args.debug, "requests")
-                .expect("Failed to fetch data");
+                .expect("无法获取数据");
 
         // Parse raw data
         let (mut parsed_elements, scale_factor_x, scale_factor_z) =
@@ -101,16 +101,16 @@ fn main() {
         // Write the parsed OSM data to a file for inspection
         if args.debug {
             let mut output_file: File =
-                File::create("parsed_osm_data.txt").expect("Failed to create output file");
+                File::create("parsed_osm_data.txt").expect("无法创建输出文件");
             for element in &parsed_elements {
                 writeln!(
                     output_file,
-                    "Element ID: {}, Type: {}, Tags: {:?}",
+                    "元素 ID：{}，类型：{}，标签：{:?}",
                     element.id(),
                     element.kind(),
                     element.tags(),
                 )
-                .expect("Failed to write to output file");
+                .expect("无法写入输出文件");
             }
         }
 
@@ -119,7 +119,7 @@ fn main() {
             data_processing::generate_world(parsed_elements, &args, scale_factor_x, scale_factor_z);
     } else {
         // Launch the UI
-        println!("Launching UI...");
+        println!("正在启动 UI...");
         tauri::Builder::default()
             .invoke_handler(tauri::generate_handler![
                 gui_select_world,
@@ -130,12 +130,12 @@ fn main() {
             .setup(|app| {
                 let app_handle = app.handle();
                 let main_window = tauri::Manager::get_webview_window(app_handle, "main")
-                    .expect("Failed to get main window");
+                    .expect("无法获取主窗口");
                 progress::set_main_window(main_window);
                 Ok(())
             })
             .run(tauri::generate_context!())
-            .expect("Error while starting the application UI (Tauri)");
+            .expect("启动应用程序 UI (Tauri) 时出错");
     }
 }
 
@@ -164,7 +164,7 @@ fn gui_select_world(generate_new: bool) -> Result<String, String> {
                 // Generate a unique world name
                 let mut counter: i32 = 1;
                 let unique_name: String = loop {
-                    let candidate_name: String = format!("Arnis World {}", counter);
+                    let candidate_name: String = format!("Arnis的世界 {}", counter);
                     let candidate_path: PathBuf = default_path.join(&candidate_name);
                     if !candidate_path.exists() {
                         break candidate_name;
@@ -178,10 +178,10 @@ fn gui_select_world(generate_new: bool) -> Result<String, String> {
                 create_new_world(&new_world_path, &unique_name)?;
                 Ok(new_world_path.display().to_string())
             } else {
-                Err("Minecraft directory not found.".to_string())
+                Err("未找到 Minecraft 目录。".to_string())
             }
         } else {
-            Err("Minecraft directory not found.".to_string())
+            Err("未找到 Minecraft 目录。".to_string())
         }
     } else {
         // Handle existing world selection
@@ -202,7 +202,7 @@ fn gui_select_world(generate_new: bool) -> Result<String, String> {
                     // Try to acquire a lock on the session.lock file
                     if let Ok(file) = File::open(&session_lock_path) {
                         if file.try_lock_shared().is_err() {
-                            return Err("The selected world is currently in use".to_string());
+                            return Err("所选世界目前正在使用中".to_string());
                         } else {
                             // Release the lock immediately
                             let _ = file.unlock();
@@ -217,7 +217,7 @@ fn gui_select_world(generate_new: bool) -> Result<String, String> {
                 // Generate a unique world name
                 let mut counter: i32 = 1;
                 let unique_name: String = loop {
-                    let candidate_name: String = format!("Arnis World {}", counter);
+                    let candidate_name: String = format!("Arnis的世界 {}", counter);
                     let candidate_path: PathBuf = path.join(&candidate_name);
                     if !candidate_path.exists() {
                         break candidate_name;
@@ -234,20 +234,20 @@ fn gui_select_world(generate_new: bool) -> Result<String, String> {
         }
 
         // If no folder was selected, return an error message
-        Err("No world selected".to_string())
+        Err("未选择世界".to_string())
     }
 }
 
 fn create_new_world(world_path: &Path, world_name: &str) -> Result<(), String> {
     // Create the new world directory structure
     fs::create_dir_all(world_path.join("region"))
-        .map_err(|e: std::io::Error| format!("Failed to create world directory: {}", e))?;
+        .map_err(|e: std::io::Error| format!("无法创建世界目录：{}", e))?;
 
     // Copy the region template file
     const REGION_TEMPLATE: &[u8] = include_bytes!("../mcassets/region.template");
     let region_path = world_path.join("region").join("r.0.0.mca");
     fs::write(&region_path, REGION_TEMPLATE)
-        .map_err(|e: std::io::Error| format!("Failed to create region file: {}", e))?;
+        .map_err(|e: std::io::Error| format!("无法创建区域文件：{}", e))?;
 
     // Add the level.dat file
     const LEVEL_TEMPLATE: &[u8] = include_bytes!("../mcassets/level.dat");
@@ -257,11 +257,11 @@ fn create_new_world(world_path: &Path, world_name: &str) -> Result<(), String> {
     let mut decompressed_data: Vec<u8> = Vec::new();
     decoder
         .read_to_end(&mut decompressed_data)
-        .map_err(|e: std::io::Error| format!("Failed to decompress level.template: {}", e))?;
+        .map_err(|e: std::io::Error| format!("无法解压 level.template: {}", e))?;
 
     // Parse the decompressed NBT data
     let mut level_data: Value = fastnbt::from_bytes(&decompressed_data)
-        .map_err(|e: fastnbt::error::Error| format!("Failed to parse level.dat template: {}", e))?;
+        .map_err(|e: fastnbt::error::Error| format!("无法解析 level.dat 模板：{}", e))?;
 
     // Modify the LevelName and LastPlayed fields
     if let Value::Compound(ref mut root) = level_data {
@@ -276,7 +276,7 @@ fn create_new_world(world_path: &Path, world_name: &str) -> Result<(), String> {
             let current_time: std::time::Duration = std::time::SystemTime::now()
                 .duration_since(std::time::UNIX_EPOCH)
                 .map_err(|e: std::time::SystemTimeError| {
-                    format!("Failed to get current time: {}", e)
+                    format!("无法获取当前时间：{}", e)
                 })?;
             let current_time_millis: i64 = current_time.as_millis() as i64;
             data.insert("LastPlayed".to_string(), Value::Long(current_time_millis));
@@ -286,7 +286,7 @@ fn create_new_world(world_path: &Path, world_name: &str) -> Result<(), String> {
     // Serialize the updated NBT data back to bytes
     let serialized_level_data: Vec<u8> =
         fastnbt::to_bytes(&level_data).map_err(|e: fastnbt::error::Error| {
-            format!("Failed to serialize updated level.dat: {}", e)
+            format!("无法序列化更新的 level.dat：{}", e)
         })?;
 
     // Compress the serialized data back to gzip
@@ -294,18 +294,18 @@ fn create_new_world(world_path: &Path, world_name: &str) -> Result<(), String> {
         flate2::write::GzEncoder::new(Vec::new(), flate2::Compression::default());
     encoder
         .write_all(&serialized_level_data)
-        .map_err(|e: std::io::Error| format!("Failed to compress updated level.dat: {}", e))?;
+        .map_err(|e: std::io::Error| format!("无法压缩更新的 level.dat：{}", e))?;
     let compressed_level_data: Vec<u8> = encoder.finish().map_err(|e: std::io::Error| {
-        format!("Failed to finalize compression for level.dat: {}", e)
+        format!("无法完成 level.dat 的压缩：{}", e)
     })?;
 
     fs::write(world_path.join("level.dat"), compressed_level_data)
-        .map_err(|e: std::io::Error| format!("Failed to create level.dat file: {}", e))?;
+        .map_err(|e: std::io::Error| format!("无法创建 level.dat 文件：{}", e))?;
 
     // Add the icon.png file
     const ICON_TEMPLATE: &[u8] = include_bytes!("../mcassets/icon.png");
     fs::write(world_path.join("icon.png"), ICON_TEMPLATE)
-        .map_err(|e: std::io::Error| format!("Failed to create icon.png file: {}", e))?;
+        .map_err(|e: std::io::Error| format!("无法创建 icon.png 文件：{}", e))?;
 
     Ok(())
 }
@@ -319,7 +319,7 @@ fn gui_get_version() -> String {
 fn gui_check_for_updates() -> Result<bool, String> {
     match version_check::check_for_updates() {
         Ok(is_newer) => Ok(is_newer),
-        Err(e) => Err(format!("Error checking for updates: {}", e)),
+        Err(e) => Err(format!("检查更新时出错：{}", e)),
     }
 }
 
@@ -342,11 +342,11 @@ fn gui_start_generation(
             // Parse bounding box string and validate it
             let bbox: Vec<f64> = bbox_text
                 .split_whitespace()
-                .map(|s| s.parse::<f64>().expect("Invalid bbox coordinate"))
+                .map(|s| s.parse::<f64>().expect("边界框坐标无效"))
                 .collect();
 
             if bbox.len() != 4 {
-                return Err("Invalid bounding box format".to_string());
+                return Err("边界框格式无效".to_string());
             }
 
             // Create an Args instance with the chosen bounding box and world directory path
@@ -382,12 +382,12 @@ fn gui_start_generation(
                     );
                     Ok(())
                 }
-                Err(e) => Err(format!("Failed to start generation: {}", e)),
+                Err(e) => Err(format!("无法开始生成：{}", e)),
             }
         })
         .await
         {
-            eprintln!("Error in blocking task: {}", e);
+            eprintln!("阻止任务时出错：{}", e);
         }
     });
 

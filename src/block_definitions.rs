@@ -141,7 +141,7 @@ impl Block {
             111 => "snow_block",
             112 => "snow",
             113 => "oak_sign",
-            _ => panic!("Invalid id"),
+            _ => panic!("无效 ID"),
         }
     }
 

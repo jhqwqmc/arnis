@@ -137,12 +137,12 @@ pub fn parse_osm_data(
     bbox: (f64, f64, f64, f64),
     args: &Args,
 ) -> (Vec<ProcessedElement>, f64, f64) {
-    println!("{} Parsing data...", "[2/5]".bold());
-    emit_gui_progress_update(5.0, "Parsing data...");
+    println!("{} 正在解析数据...", "[2/5]".bold());
+    emit_gui_progress_update(5.0, "正在解析数据...");
 
     // Deserialize the JSON data into the OSMData structure
     let data: OsmData =
-        serde_json::from_value(json_data.clone()).expect("Failed to parse OSM data");
+        serde_json::from_value(json_data.clone()).expect("无法解析 OSM 数据");
 
     // Determine which dimension is larger and assign scale factors accordingly
     let (scale_factor_z, scale_factor_x) = geo_distance(bbox.1, bbox.3, bbox.0, bbox.2);
@@ -150,8 +150,8 @@ pub fn parse_osm_data(
     let scale_factor_x: f64 = scale_factor_x.floor() * args.scale;
 
     if args.debug {
-        println!("Scale factor X: {}", scale_factor_x);
-        println!("Scale factor Z: {}", scale_factor_z);
+        println!("比例系数 X：{}", scale_factor_x);
+        println!("比例系数 Z：{}", scale_factor_z);
     }
 
     let mut nodes_map: HashMap<u64, ProcessedNode> = HashMap::new();
@@ -233,7 +233,7 @@ pub fn parse_osm_data(
             .iter()
             .filter_map(|mem: &OsmMember| {
                 if mem.r#type != "way" {
-                    eprintln!("WARN: Unknown relation type {}", mem.r#type);
+                    eprintln!("警告：未知的关系类型 {}", mem.r#type);
                     return None;
                 }
 
@@ -250,7 +250,7 @@ pub fn parse_osm_data(
 
                 let way: ProcessedWay = ways_map
                     .get(&mem.r#ref)
-                    .expect("Missing a way referenced by a rel")
+                    .expect("缺少相关引用的方法")
                     .clone();
 
                 Some(ProcessedMember { role, way })

@@ -258,13 +258,13 @@ impl<'a> WorldEditor<'a> {
             .create(true)
             .truncate(true)
             .open(&out_path)
-            .expect("Failed to open region file");
+            .expect("无法打开区域文件");
 
         region_file
             .write_all(REGION_TEMPLATE)
-            .expect("Could not write region template");
+            .expect("无法写入区域模板");
 
-        Region::from_stream(region_file).expect("Failed to load region")
+        Region::from_stream(region_file).expect("加载区域失败")
     }
 
     pub fn get_max_coords(&self) -> (i32, i32) {
@@ -434,8 +434,8 @@ impl<'a> WorldEditor<'a> {
 
     /// Saves all changes made to the world by writing modified chunks to the appropriate region files.
     pub fn save(&mut self) {
-        println!("{} Saving world...", "[5/5]".bold());
-        emit_gui_progress_update(90.0, "Saving world...");
+        println!("{} 保存世界...", "[5/5]".bold());
+        emit_gui_progress_update(90.0, "保存世界...");
 
         let _debug: bool = self.args.debug;
         let total_regions: u64 = self.world.regions.len() as u64;
@@ -444,7 +444,7 @@ impl<'a> WorldEditor<'a> {
         save_pb.set_style(
             ProgressStyle::default_bar()
                 .template(
-                    "{spinner:.green} [{elapsed_precise}] [{bar:45}] {pos}/{len} regions ({eta})",
+                    "{spinner:.green} [{elapsed_precise}] [{bar:45}] {pos}/{len} 区域 ({eta})",
                 )
                 .unwrap()
                 .progress_chars("█▓░"),
@@ -491,7 +491,7 @@ impl<'a> WorldEditor<'a> {
 
             current_progress_save += progress_increment_save;
             if (current_progress_save - last_emitted_progress).abs() > 0.25 {
-                emit_gui_progress_update(current_progress_save, "Saving world...");
+                emit_gui_progress_update(current_progress_save, "保存世界...");
                 last_emitted_progress = current_progress_save;
             }
         }
